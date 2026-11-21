@@ -1,0 +1,16 @@
+C:\Users\Pc\Desktop\RegistrationwithC#\InstagramSimulation\InstagramSimulation\bin\Debug\net10.0\InstagramSimulation.exe
+C:\Users\Pc\Desktop\RegistrationwithC#\InstagramSimulation\InstagramSimulation\bin\Debug\net10.0\InstagramSimulation.deps.json
+C:\Users\Pc\Desktop\RegistrationwithC#\InstagramSimulation\InstagramSimulation\bin\Debug\net10.0\InstagramSimulation.runtimeconfig.json
+C:\Users\Pc\Desktop\RegistrationwithC#\InstagramSimulation\InstagramSimulation\bin\Debug\net10.0\InstagramSimulation.runtimeconfig.dev.json
+C:\Users\Pc\Desktop\RegistrationwithC#\InstagramSimulation\InstagramSimulation\bin\Debug\net10.0\InstagramSimulation.dll
+C:\Users\Pc\Desktop\RegistrationwithC#\InstagramSimulation\InstagramSimulation\bin\Debug\net10.0\InstagramSimulation.pdb
+C:\Users\Pc\Desktop\RegistrationwithC#\InstagramSimulation\InstagramSimulation\obj\Debug\net10.0\InstagramSimulation.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Pc\Desktop\RegistrationwithC#\InstagramSimulation\InstagramSimulation\obj\Debug\net10.0\InstagramSimulation.AssemblyInfoInputs.cache
+C:\Users\Pc\Desktop\RegistrationwithC#\InstagramSimulation\InstagramSimulation\obj\Debug\net10.0\InstagramSimulation.AssemblyInfo.cs
+C:\Users\Pc\Desktop\RegistrationwithC#\InstagramSimulation\InstagramSimulation\obj\Debug\net10.0\InstagramSimulation.csproj.CoreCompileInputs.cache
+C:\Users\Pc\Desktop\RegistrationwithC#\InstagramSimulation\InstagramSimulation\obj\Debug\net10.0\InstagramSimulation.dll
+C:\Users\Pc\Desktop\RegistrationwithC#\InstagramSimulation\InstagramSimulation\obj\Debug\net10.0\refint\InstagramSimulation.dll
+C:\Users\Pc\Desktop\RegistrationwithC#\InstagramSimulation\InstagramSimulation\obj\Debug\net10.0\InstagramSimulation.pdb
+C:\Users\Pc\Desktop\RegistrationwithC#\InstagramSimulation\InstagramSimulation\obj\Debug\net10.0\InstagramSimulation.genruntimeconfig.cache
+C:\Users\Pc\Desktop\RegistrationwithC#\InstagramSimulation\InstagramSimulation\obj\Debug\net10.0\ref\InstagramSimulation.dll
+C:\Users\Pc\Desktop\RegistrationwithC#\InstagramSimulation\InstagramSimulation\obj\Debug\net10.0\Instagra.7FF66E75.Up2Date
