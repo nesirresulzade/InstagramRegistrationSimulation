@@ -1,6 +1,4 @@
 ﻿
-using System.Text.RegularExpressions;
-
 namespace InstagramSimulation.Helpers
 {
     internal class ValidationHelper
@@ -11,12 +9,36 @@ namespace InstagramSimulation.Helpers
             if (string.IsNullOrWhiteSpace(email))
                 return false;
 
-            var regex = new Regex(
-                @"^[^@\s]+@[^@\s]+\.[^@\s]+$"
-            );
+            int atIndex = email.IndexOf('@');
 
-            return regex.IsMatch(email);
+            // @ simvolu olmalıdır
+            if (atIndex == -1)
+                return false;
+
+            // Yalnız bir @ olmalıdır
+            if (email.LastIndexOf('@') != atIndex)
+                return false;
+
+            // @ simvolundan əvvəl və sonra məlumat olmalıdır
+            if (atIndex == 0 || atIndex == email.Length - 1)
+                return false;
+
+            string domain = email.Substring(atIndex + 1);
+
+            int dotIndex = domain.IndexOf('.');
+
+            // Domain daxilində nöqtə olmalıdır
+            if (dotIndex == -1)
+                return false;
+
+            // Nöqtə domain-in əvvəlində və sonunda ola bilməz
+            if (dotIndex == 0 || dotIndex == domain.Length - 1)
+                return false;
+
+            // Nöqtədən sonra ən azı bir simvol olmalıdır
+            return true;
         }
+
 
         // Username yoxlanışı
         public static bool IsValidUsername(string username)
@@ -24,36 +46,79 @@ namespace InstagramSimulation.Helpers
             if (string.IsNullOrWhiteSpace(username))
                 return false;
 
-            var regex = new Regex(
-                @"^[a-zA-Z0-9._]{3,20}$"
-            );
+            if (username.Length < 3 || username.Length > 20)
+                return false;
 
-            return regex.IsMatch(username);
+            for (int i = 0; i < username.Length; i++)
+            {
+                char character = username[i];
+
+                if (!char.IsLetterOrDigit(character) &&
+                    character != '.' &&
+                    character != '_')
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
+
 
         // Password yoxlanışı
         public static string GetPasswordValidationError(string password)
         {
             if (string.IsNullOrWhiteSpace(password))
-                return "Password boş ola bilməz!";
+                return "Password bos ola bilmez!";
 
             if (password.Length < 8)
-                return "Password minimum 8 simvol olmalıdır!";
+                return "Password minimum 8 simvol olmalidir!";
 
-            if (!Regex.IsMatch(password, @"[a-z]"))
-                return "Password ən azı bir kiçik hərf daxil etməlidir!";
+            bool hasLowercase = false;
+            bool hasUppercase = false;
+            bool hasDigit = false;
+            bool hasSpecialCharacter = false;
 
-            if (!Regex.IsMatch(password, @"[A-Z]"))
-                return "Password ən azı bir böyük hərf daxil etməlidir!";
+            for (int i = 0; i < password.Length; i++)
+            {
+                char character = password[i];
 
-            if (!Regex.IsMatch(password, @"\d"))
-                return "Password ən azı bir rəqəm daxil etməlidir!";
+                if (char.IsLower(character))
+                    hasLowercase = true;
 
-            if (!Regex.IsMatch(password, @"[@$!%*?&]"))
-                return "Password ən azı bir xüsusi simvol daxil etməlidir!";
+                if (char.IsUpper(character))
+                    hasUppercase = true;
+
+                if (char.IsDigit(character))
+                    hasDigit = true;
+
+                if (character == '@' ||
+                    character == '$' ||
+                    character == '!' ||
+                    character == '%' ||
+                    character == '*' ||
+                    character == '?' ||
+                    character == '&')
+                {
+                    hasSpecialCharacter = true;
+                }
+            }
+
+            if (!hasLowercase)
+                return "Password en azi bir kicik herf daxil etmelidir!";
+
+            if (!hasUppercase)
+                return "Password en azi bir boyuk herf daxil etmelidir!";
+
+            if (!hasDigit)
+                return "Password en azi bir reqem daxil etmelidir!";
+
+            if (!hasSpecialCharacter)
+                return "Password en azi bir xususi simvol daxil etmelidir!";
 
             return "";
         }
+
 
         // Telefon nömrəsi yoxlanışı
         public static bool IsValidPhoneNumber(string phoneNumber)
@@ -61,17 +126,31 @@ namespace InstagramSimulation.Helpers
             if (string.IsNullOrWhiteSpace(phoneNumber))
                 return false;
 
-            // Boşluq və defisləri təmizləyirik.
+            // Boşluq və defisləri təmizləyirik
             string cleanedNumber = phoneNumber
                 .Replace(" ", "")
                 .Replace("-", "");
 
-            var regex = new Regex(
-                @"^\+?\d{10,15}$"
-            );
+            // + simvolu varsa, yalnız başlanğıcda ola bilər
+            if (cleanedNumber.StartsWith("+"))
+            {
+                cleanedNumber = cleanedNumber.Substring(1);
+            }
 
-            return regex.IsMatch(cleanedNumber);
+            // Rəqəmlərin uzunluğunu yoxlayırıq
+            if (cleanedNumber.Length < 10 || cleanedNumber.Length > 15)
+                return false;
+
+            // Hər simvolun rəqəm olub-olmadığını yoxlayırıq
+            for (int i = 0; i < cleanedNumber.Length; i++)
+            {
+                if (!char.IsDigit(cleanedNumber[i]))
+                    return false;
+            }
+
+            return true;
         }
+
 
         // Ad və soyad yoxlanışı
         public static bool IsValidName(string name)
@@ -79,12 +158,24 @@ namespace InstagramSimulation.Helpers
             if (string.IsNullOrWhiteSpace(name))
                 return false;
 
-            var regex = new Regex(
-                @"^[\p{L}\s-]{1,100}$"
-            );
+            if (name.Length > 100)
+                return false;
 
-            return regex.IsMatch(name);
+            for (int i = 0; i < name.Length; i++)
+            {
+                char character = name[i];
+
+                if (!char.IsLetter(character) &&
+                    !char.IsWhiteSpace(character) &&
+                    character != '-')
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
+
 
         // Doğum tarixi və yaş yoxlanışı
         public static string GetBirthDateValidationError(
@@ -92,7 +183,7 @@ namespace InstagramSimulation.Helpers
             int minimumAge = 13)
         {
             if (birthDate.Date > DateTime.Today)
-                return "Doğum tarixi gələcək tarix ola bilməz!";
+                return "Dogum tarixi gelecek tarix ola bilmez!";
 
             int age = DateTime.Today.Year - birthDate.Year;
 
@@ -100,7 +191,7 @@ namespace InstagramSimulation.Helpers
                 age--;
 
             if (age < minimumAge)
-                return $"Qeydiyyat üçün minimum yaş {minimumAge} olmalıdır!";
+                return $"Qeydiyyat ucun minimum yas {minimumAge} olmalidir!";
 
             return "";
         }
