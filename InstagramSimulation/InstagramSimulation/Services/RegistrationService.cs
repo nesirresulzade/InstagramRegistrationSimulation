@@ -1,122 +1,31 @@
 ﻿
 using InstagramSimulation.Models;
 using InstagramSimulation.Helpers;
-using System.Linq;
+using System;
 
 namespace InstagramSimulation.Services
 {
     internal class RegistrationService
     {
-        private List<User> users;
+        private User[] users;
 
-        public RegistrationService(List<User> users)
+        public RegistrationService(User[] users)
         {
-            this.users = users ?? new List<User>();
+            this.users = users ?? new User[0];
         }
 
+        // Qeydiyyatdan keçmiş user-ləri əldə etmək
+        public User[] Users
+        {
+            get { return users; }
+        }
+
+        // PERSONAL ACCOUNT
         public void RegisterPersonalAccount(PersonalAccount account)
-        {
-            // 1. Null yoxlanışı
-            if (account == null)
-            {
-                Console.WriteLine("Account bos ola bilmez!");
-                return;
-            }
-
-            // 2. Ad yoxlanışı
-            if (!ValidationHelper.IsValidName(account.Name))
-            {
-                Console.WriteLine("Ad duzgun formatda deyil!");
-                return;
-            }
-
-            // 3. Soyad yoxlanışı
-            if (!ValidationHelper.IsValidName(account.Surname))
-            {
-                Console.WriteLine("Soyad duzgun formatda deyil!");
-                return;
-            }
-
-            // 4. Username yoxlanışı
-            if (!ValidationHelper.IsValidUsername(account.UserName))
-            {
-                Console.WriteLine("Username duzgun formatda deyil!");
-                return;
-            }
-
-            // 5. Email yoxlanışı
-            if (!ValidationHelper.IsValidEmail(account.Email))
-            {
-                Console.WriteLine("Email duzgun formatda deyil!");
-                return;
-            }
-
-            // 6. Password yoxlanışı
-            string passwordError = account.GetPasswordValidationError();
-
-            if (!string.IsNullOrEmpty(passwordError))
-            {
-                Console.WriteLine(passwordError);
-                return;
-            }
-
-            // 7. Telefon yoxlanışı
-            if (!ValidationHelper.IsValidPhoneNumber(account.PhoneNumber))
-            {
-                Console.WriteLine("Telefon nomresi duzgun formatda deyil!");
-                return;
-            }
-
-            // 8. Doğum tarixi yoxlanışı
-            string birthDateError =
-                ValidationHelper.GetBirthDateValidationError(account.BirthDate);
-
-            if (!string.IsNullOrEmpty(birthDateError))
-            {
-                Console.WriteLine(birthDateError);
-                return;
-            }
-
-            // 9. Təkrarlanan username yoxlanışı
-            if (IsUsernameTaken(account.UserName))
-            {
-                Console.WriteLine("Bu username artiq istifade olunur!");
-                return;
-            }
-
-            // 10. Təkrarlanan email yoxlanışı
-            if (IsEmailTaken(account.Email))
-            {
-                Console.WriteLine("Bu email artiq qeydiyyatdan kechib!");
-                return;
-            }
-
-            // 11. Təkrarlanan telefon yoxlanışı
-            if (IsPhoneNumberTaken(account.PhoneNumber))
-            {
-                Console.WriteLine("Bu telefon nomresi artiq istifade olunur!");
-                return;
-            }
-
-            // 12. Qeydiyyat
-            users.Add(account);
-
-            Console.WriteLine("Qeydiyyat ugurla tamamlandi!");
-        }
-
-        public void RegisterBusinessAccount(BusinessAccount account)
         {
             if (account == null)
             {
                 Console.WriteLine("Account boş ola bilməz!");
-                return;
-            }
-
-            string passwordError = account.GetPasswordValidationError();
-
-            if (!string.IsNullOrEmpty(passwordError))
-            {
-                Console.WriteLine(passwordError);
                 return;
             }
 
@@ -127,14 +36,42 @@ namespace InstagramSimulation.Services
                 return;
             }
 
-            if (!ValidationHelper.IsValidUsername(account.UserName) ||
-                !ValidationHelper.IsValidEmail(account.Email) ||
-                !ValidationHelper.IsValidPhoneNumber(account.PhoneNumber))
+            if (!ValidationHelper.IsValidUsername(account.UserName))
             {
-                Console.WriteLine("İstifadəçi məlumatları düzgün deyil!");
+                Console.WriteLine("Username düzgün formatda deyil!");
                 return;
             }
 
+            if (!ValidationHelper.IsValidEmail(account.Email))
+            {
+                Console.WriteLine("Email düzgün formatda deyil!");
+                return;
+            }
+
+            string passwordError = account.GetPasswordValidationError();
+
+            if (!string.IsNullOrEmpty(passwordError))
+            {
+                Console.WriteLine(passwordError);
+                return;
+            }
+
+            if (!ValidationHelper.IsValidPhoneNumber(account.PhoneNumber))
+            {
+                Console.WriteLine("Telefon nömrəsi düzgün deyil!");
+                return;
+            }
+
+            string birthDateError =
+                ValidationHelper.GetBirthDateValidationError(account.BirthDate);
+
+            if (!string.IsNullOrEmpty(birthDateError))
+            {
+                Console.WriteLine(birthDateError);
+                return;
+            }
+
+            // Duplicate yoxlamaları
             if (IsUsernameTaken(account.UserName))
             {
                 Console.WriteLine("Bu username artıq istifadə olunur!");
@@ -153,39 +90,191 @@ namespace InstagramSimulation.Services
                 return;
             }
 
-            users.Add(account);
+            AddUser(account);
+
+            Console.WriteLine("Personal Account qeydiyyatı uğurla tamamlandı!");
+        }
+
+        // BUSINESS ACCOUNT
+        public void RegisterBusinessAccount(BusinessAccount account)
+        {
+            if (account == null)
+            {
+                Console.WriteLine("Account boş ola bilməz!");
+                return;
+            }
+
+            if (!ValidationHelper.IsValidName(account.Name) ||
+                !ValidationHelper.IsValidName(account.Surname))
+            {
+                Console.WriteLine("Ad və ya soyad düzgün deyil!");
+                return;
+            }
+
+            if (!ValidationHelper.IsValidUsername(account.UserName))
+            {
+                Console.WriteLine("Username düzgün formatda deyil!");
+                return;
+            }
+
+            if (!ValidationHelper.IsValidEmail(account.Email))
+            {
+                Console.WriteLine("Email düzgün formatda deyil!");
+                return;
+            }
+
+            string passwordError = account.GetPasswordValidationError();
+
+            if (!string.IsNullOrEmpty(passwordError))
+            {
+                Console.WriteLine(passwordError);
+                return;
+            }
+
+            if (!ValidationHelper.IsValidPhoneNumber(account.PhoneNumber))
+            {
+                Console.WriteLine("Telefon nömrəsi düzgün deyil!");
+                return;
+            }
+
+            string birthDateError =
+                ValidationHelper.GetBirthDateValidationError(account.BirthDate);
+
+            if (!string.IsNullOrEmpty(birthDateError))
+            {
+                Console.WriteLine(birthDateError);
+                return;
+            }
+
+            // Duplicate yoxlamaları
+            if (IsUsernameTaken(account.UserName))
+            {
+                Console.WriteLine("Bu username artıq istifadə olunur!");
+                return;
+            }
+
+            if (IsEmailTaken(account.Email))
+            {
+                Console.WriteLine("Bu email artıq qeydiyyatdan keçib!");
+                return;
+            }
+
+            if (IsPhoneNumberTaken(account.PhoneNumber))
+            {
+                Console.WriteLine("Bu telefon nömrəsi artıq istifadə olunur!");
+                return;
+            }
+
+            AddUser(account);
 
             Console.WriteLine("Business Account qeydiyyatı uğurla tamamlandı!");
         }
 
+        // AVAILABILITY CHECKS
+        public bool IsUsernameAvailable(string username)
+        {
+            return !IsUsernameTaken(username);
+        }
+
+        public bool IsEmailAvailable(string email)
+        {
+            return !IsEmailTaken(email);
+        }
+
+        public bool IsPhoneNumberAvailable(string phoneNumber)
+        {
+            return !IsPhoneNumberTaken(phoneNumber);
+        }
+
+        // ADD USER
+        private void AddUser(User user)
+        {
+            User[] newUsers = new User[users.Length + 1];
+
+            for (int i = 0; i < users.Length; i++)
+            {
+                newUsers[i] = users[i];
+            }
+
+            newUsers[newUsers.Length - 1] = user;
+
+            users = newUsers;
+        }
+
+        // DUPLICATE CHECKS
         private bool IsUsernameTaken(string username)
         {
-            return users.Any(u =>
-                string.Equals(
-                    u.UserName,
+            foreach (User user in users)
+            {
+                if (user == null)
+                    continue;
+
+                if (string.Equals(
+                    user.UserName,
                     username,
-                    StringComparison.OrdinalIgnoreCase
-                ));
+                    StringComparison.OrdinalIgnoreCase))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         private bool IsEmailTaken(string email)
         {
-            return users.Any(u =>
-                string.Equals(
-                    u.Email,
+            foreach (User user in users)
+            {
+                if (user == null)
+                    continue;
+
+                if (string.Equals(
+                    user.Email,
                     email,
-                    StringComparison.OrdinalIgnoreCase
-                ));
+                    StringComparison.OrdinalIgnoreCase))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         private bool IsPhoneNumberTaken(string phoneNumber)
         {
-            return users.Any(u =>
-                string.Equals(
-                    u.PhoneNumber,
-                    phoneNumber,
-                    StringComparison.Ordinal
-                ));
+            string normalizedPhone = NormalizePhoneNumber(phoneNumber);
+
+            foreach (User user in users)
+            {
+                if (user == null)
+                    continue;
+
+                string existingPhone =
+                    NormalizePhoneNumber(user.PhoneNumber);
+
+                if (string.Equals(
+                    existingPhone,
+                    normalizedPhone,
+                    StringComparison.Ordinal))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private string NormalizePhoneNumber(string phoneNumber)
+        {
+            if (string.IsNullOrWhiteSpace(phoneNumber))
+                return "";
+
+            return phoneNumber
+                .Replace(" ", "")
+                .Replace("-", "")
+                .Replace("+", "")
+                .Replace("(", "")
+                .Replace(")", "");
         }
     }
 }

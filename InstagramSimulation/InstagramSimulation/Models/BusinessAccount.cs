@@ -17,7 +17,7 @@ namespace InstagramSimulation.Models
             string businessCategory,
             string website) : base(id, name, surname, username, email, phoneNumber, password, birthDate)
         {
-            BusinessName = businessName;
+            BusinessName = businessName.Trim();
             BusinessCategory = businessCategory;
             Website = website;
         }
